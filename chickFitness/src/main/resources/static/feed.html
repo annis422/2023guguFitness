@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.101.0">
+    <title>My Chickie</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.6/examples/pricing/">
+
+    <!-- 引入 jQuery 库 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/pricing.css" rel="stylesheet">
+    <script src="css/chick.js"></script>
+</head>
+<body>
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-warning">
+			<img src="img/egg-nav.png" height="30"
+				class="d-inline-block align-top " alt=""> <span
+				class="navbar-brand mb-0 h1">GUGU Fitness</span>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active"><a class="nav-link"
+						href="/home.html">Home <span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+                        <a class="nav-link" href="/courses.html">Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/schedule.html">My Plan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/feed.html">My Chickie</a>
+                    </li>
+				</ul>
+				<form class="form-inline my-2 my-lg-0">
+<p id="memberId" style="display:none;"></p>
+        <a class="btn btn-outline-dark" href="memberProfile.html" style="margin-right: 10px;">會員專區</a>	
+        <button id="memberLogout" class="btn btn-outline-dark"
+						style="margin-right: 10px;">登出</button>
+				</form>
+			</div>
+		</nav>
+<div class="container" style="margin-bottom:100px;">
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+   <div class="card-header rounded-pill bg-warning border-warning " style="text-align: center; color: ghostwhite; font-size: 25px;">
+    <span id="welcome-message">UserName</span>
+</div>
+    <br>
+    <!-- 这里是显示不同等级图片的 img 元素 -->
+    <img id="chickImage" class="rounded mx-auto d-block" width="200px" >
+    
+
+    
+        
+
+        
+            <!-- 等级和经验条显示区域 
+            <p class="chick-label">等級: <span class="chick-value" id="currentLevelValue"></span></p>-->
+            <button type="button" class="btn btn-warning" style="margin-bottom:20px;">  等級 <span class="badge badge-light chick-value" id="currentLevelValue"></span>
+  			
+</button>
+<br>
+<!-- ////////////////////////////////////////////////////////////////////////////////// -->
+
+           <div class="progress">
+    <div id="progressBar" class="progress-bar bg-warning blinking" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+    </div>
+</div>
+<div id="expText">0%</div>
+<!-- ////////////////////////////////////////////////////////////////////////////////// -->
+        <br>
+       
+        <div class="container">
+            <div class="chick-card">
+                <div class="avatar-frame">
+                </div>
+                <div class="chick-info">
+                
+        <button type="button" class="btn btn-warning" style="margin-bottom:20px;">  重生次數 
+        <span class="badge badge-light chick-value" id="lifecountValue"></span></button>
+                <button type="button" class="btn btn-warning" style="margin-bottom:20px;">  階級 
+        <span class="badge badge-light chick-value" id="chickStageValue"></span></button>
+                <button type="button" class="btn btn-warning" style="margin-bottom:20px;">  經驗值 
+        <span class="badge badge-light chick-value" id="currentExpValue"></span></button>
+                   
+               <br>
+                    <button id="resetExpButton" class="btn btn-danger">重生</button>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+    $(document).ready(start);
+    
+    function start() {
+    	// 获取会话中的 Member 对象
+        $.get('http://localhost:8080/session', function (data) {
+            if (data==null) {
+            	window.location.href = 'memberLogin.html';
+				return; // 執行跳轉後結束函數
+            }
+            else{
+                // 如果会话数据存在，将用户名显示在页面上
+                $('#welcome-message').text("Welcome, " + data.name + "!");
+            }
+        });
+        // 使用会话存储检索Chick信息
+        $.get('http://localhost:8080/chick/info', function (data) {
+
+            if (data) {
+                // 如果会话数据存在，将小鸡信息显示在页面上
+                $('#lifecountValue').html(data.lifecount);
+                $('#currentExpValue').html(data.currentExp);
+
+                // 计算等级和更新经验条
+                var level = calculateLevel(data.currentExp);
+                $('#currentLevelValue').html(level + 1); // 显示等级为当前结果加1
+
+                updateProgressBar(data.currentExp, level);
+                // 调用更新階級的函数
+                stage();
+
+                // 重生功能/////////////////////////////////////
+                // 監聽經驗值變化
+                $('#currentExpValue').on('DOMSubtreeModified', function () {
+                    var currentExp = parseInt($('#currentExpValue').text());
+
+                    // 檢查是否達到270000經驗值
+                    if (currentExp >= 270000) {
+                        // 顯示重置經驗值按鈕
+                        $('#resetExpButton').show();
+                    } else {
+                        // 隱藏重置經驗值按鈕
+                        $('#resetExpButton').hide();
+                    }
+                });
+
+                // 監聽重置經驗值按鈕的點擊事件
+                $('#resetExpButton').click(function () {
+                    var currentExp = parseInt($('#currentExpValue').text());
+
+                    // 檢查經驗值是否大於等於270000
+                    if (currentExp >= 270000) {
+                        // 向後端的resetExp方法發送POST請求
+                        $.post("/chick/resetExp", function (response) {
+                            // 重置經驗值為0
+                            $('#currentExpValue').text('0');
+
+                            // 獲取並增加重生次數
+                            var lifecountValue = parseInt($('#lifecountValue').text());
+                            lifecountValue += 1;
+                            $('#lifecountValue').text(lifecountValue);
+                            
+                            // 重新加载页面
+                            window.location.reload();
+
+                            // 示範向控制台輸出消息
+                            console.log(response);
+                        })
+                            .fail(function (error) {
+                                // 如果後端操作失敗，顯示錯誤消息
+                                alert('操作失敗：' + error.responseText);
+                            });
+                    } else {
+                        // 如果經驗值不足，顯示提示消息
+                        alert('未達滿等無法重生');
+                    }
+                });
+            } else {
+                // 如果会话数据不存在，显示相应的消息
+                $('#userNameValue').text("Chick Info Not Available");
+            }
+        });
+
+        function calculateLevel(currentExp) {
+            // 根据经验计算规则计算等级
+            // 这里需要根据您的规则进行具体实现
+            // 示例代码中是一个简单的等级计算规则
+            var requiredExpByLevel = [0, 6000, 18000, 36000, 60000, 90000, 126000, 168000, 216000, 270000];
+            for (var i = 1; i < requiredExpByLevel.length; i++) {
+                if (currentExp < requiredExpByLevel[i]) {
+                    return i - 1;
+                }
+            }
+            return requiredExpByLevel.length - 1;
+        }
+
+        function updateProgressBar(currentExp, currentLevel) {
+            // 计算经验条百分比
+            var requiredExpByLevel = [0, 6000, 18000, 36000, 60000, 90000, 126000, 168000, 216000, 270000];
+            var requiredExp = requiredExpByLevel[currentLevel];
+            var nextLevelExp = requiredExpByLevel[currentLevel + 1];
+
+            // 将经验百分比默认值设置为0
+            var expPercentage = 0;
+
+            if (currentExp >= 270000) {
+                // 如果经验值大于等于270000，将经验条百分比设置为100%
+                expPercentage = 100;
+            } else {
+                expPercentage = ((currentExp - requiredExp) / (nextLevelExp - requiredExp)) * 100;
+            }
+
+            // 更新经验条显示
+            $("#progressBar").css("width", expPercentage + "%").attr("aria-valuenow", expPercentage);
+
+            // 更新经验条下面的数字
+            $("#expText").text(expPercentage.toFixed(2) + "%");
+
+           
+
+            // 在这里调用 updateChickImage 函数
+            updateChickImage(currentLevel + 1);
+        }
+
+    }
+
+    // 更新階級的函数
+    function stage() {
+        // 从页面中获取 lifecountValue 的值
+        var lifecountValue = parseInt($('#lifecountValue').text());
+
+        // 根据 lifecountValue 的值设置階級后面的内容
+        var levelText = ""; // 初始化内容
+
+        switch (lifecountValue) {
+            case 0:
+                levelText = "手無縛雞";
+                break;
+            case 1:
+                levelText = "小菜雞";
+                break;
+            case 2:
+                levelText = "練出六塊雞";
+                break;
+            case 3:
+                levelText = "老司雞";
+                break;
+            // 添加更多的情况根据需要
+            default:
+                levelText = "未知";
+        }
+
+        // 将階級后面的内容显示在页面上
+        $('#chickStageValue').html(levelText);
+    }
+
+    //隨等級變換圖片//////////////
+    function updateChickImage(currentLevel) {
+        var imagePath = ""; // 初始化图片路径
+
+        // 根据不同的等级设置不同的图片路径
+        switch (currentLevel) {
+            case 1:
+                imagePath = "img/level1.png";
+                break;
+            case 2:
+                imagePath = "img/level2.png";
+                break;
+            case 3:
+                // 等级4时显示等级3的图片
+                imagePath = "img/level3.png";
+                break;
+            case 4:
+                imagePath = "img/level3.png";
+                break;
+            case 5:
+                // 等级6时显示等级5的图片
+                imagePath = "img/level5.png";
+                break;
+            case 6:
+                imagePath = "img/level5.png";
+                break;
+            case 7:
+                // 等级8时显示等级7的图片
+                imagePath = "img/level7.png";
+                break;
+            case 8:
+                imagePath = "img/level7.png";
+                break;
+            case 9:
+                imagePath = "img/level9.png";
+                break;
+            case 10:
+                imagePath = "img/level9.png";
+                break;
+        }
+
+        // 更新图片的 src 属性
+        $("#chickImage").attr("src", imagePath);
+    }
+
+    
+    </script>
+			<footer class="footer"
+			style="padding: 50px 50px; background-color: gray;">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-6 text-center">
+						<p class="text-light">&copy; 2023 GuGuchick Fitness。保留所有權利。</p>
+						<p class="text-light" style="font-size: 8pt;">
+							免責聲明：<br>本網站提供的信息僅供一般信息目的。<br>在開始任何運動或飲食計劃前，請諮詢醫療專業人員。
+						</p>
+					</div>
+				</div>
+				<div class="row justify-content-center">
+					<div class="col-lg-6 text-center">
+						<ul class="list-inline social-media">
+							<li class="list-inline-item"><a href="#"><i
+									class="fab fa-facebook"></i></a></li>
+							<li class="list-inline-item"><a href="#"><i
+									class="fab fa-twitter"></i></a></li>
+							<li class="list-inline-item"><a href="#"><i
+									class="fab fa-instagram"></i></a></li>
+						</ul>
+						<p class="text-light">聯繫我們：Guguchick@gmail.com</p>
+					</div>
+				</div>
+				<div class="row justify-content-center">
+					<div class="col-lg-6 text-center">
+						<div class="scroll-to-top">
+							<!-- 將按鈕樣式改為簡約風格 -->
+							<a href="#" class="btn btn-outline-warning slogan-button "> <i
+								class="fas fa-arrow-up"></i> 返回頂部
+							</a>
+							
+						</div>
+						<br>
+						<p class="text-light">
+							<a href="privacy.html" class="text-warning">隱私政策</a> | <a
+								href="terms.html" class="text-warning">使用條款</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</footer>
+</body>
+
+<script>
+$("#memberLogout").click(function() {
+	 // 給登出按鈕添加點擊事件處理程序
+    
+        $.ajax({
+            url: '/logout', // API位置
+            type: 'GET', //  後端 HTTP 方法
+            success: function(response) {              
+ // //成功後清除歷史記錄 //此方法配合replace跳轉頁面，歷史紀錄會出現目前頁面
+ if (window.history && window.history.pushState) {
+   window.history.pushState({}, '', '/');
+  }
+
+ // 跳轉到登入頁面 //只有此語法不保留當前頁面歷史紀錄
+ location.replace('memberLogin.html');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error logging out:', error);
+            }
+        });
+    });
+
+</script>
+</html>

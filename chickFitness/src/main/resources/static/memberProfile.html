@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>會員資料</title>
+	
+<!-- Bootstrap CSS -->
+<!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+	integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+	integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+<!--<link rel="stylesheet" type="text/css" href="css/courses.css">
+	<link href="css/form-validation.css" rel="stylesheet">-->
+	<style>
+		label {
+            font-weight: bold;
+        }
+	</style>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body class="bg-light">
+	<nav class="navbar navbar-expand-lg navbar-light bg-warning">
+		<div class="container-fluid">
+			<img src="img/egg-nav.png" height="30" class="d-inline-block align-top ">
+			<span class="navbar-brand mb-0 h1">GUGU Fitness</span>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item active"><a class="nav-link" href="/home.html">Home</a></li>
+					<li class="nav-item"><a class="nav-link" href="/courses.html">Courses</a></li>
+					<li class="nav-item"><a class="nav-link" href="/schedule.html">My Plan</a></li>
+					<li class="nav-item"><a class="nav-link" href="/feed.html">My Chick</a></li>
+				</ul>
+			<!--	<form class="d-flex">-->
+				<form class="ml-auto my-2 my-lg-0">
+					<button id="mLogout" class="btn btn-outline-dark">登出</button>
+				</form>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="mb-4 text-center">
+			<img class="d-block mx-auto mb-0" src="img/chick.png" alt="" width="250">
+			<h2>會員資料</h2>
+			<p class="lead">&#127775; 趣味健身 x &#128035; 虛擬小雞成長 &#128036;</p>
+			<div id="mName"></div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+			<!--	<h4 class="mb-3">基本資料</h4> -->
+				<form class="needs-validation" 
+						style="background-color: #fff;
+							border-radius: 10px;
+							padding: 20px;
+							box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);" novalidate>
+					<div class="mb-3">
+						<label for="id">會員帳號</label>
+						<input type="text" class="form-control" id="idText" required readonly>
+					</div>
+
+					<div class="mb-3">
+						<label for="name">姓名</label>
+						<input type="text" class="form-control" id="nameText" required>
+						<div class="invalid-feedback">請輸入有效的姓名。</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="email">電子郵件</label>
+						<input type="email" class="form-control" id="emailText" placeholder="you@example.com" required>
+						<div class="invalid-feedback">請輸入有效的電子郵件地址。</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="password">密碼</label>
+						<input type="password" class="form-control" id="passwordText" required>
+						<div class="invalid-feedback">請輸入有效的密碼。</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="regisDate">註冊會員時間</label>
+						<input type="text" class="form-control" id="regisDate" readonly>
+					</div>
+
+					<div class="mb-3">
+						<label for="loginDate">最後登入時間</label>
+						<input type="text" class="form-control" id="loginDate" readonly>
+					</div>
+
+					<br />
+					<button class="btn btn-warning btn-lg btn-block"
+                            type="submit"
+                            onclick="memberUpdate(event)"
+                            style="width:100%">修改
+                    </button>
+					<br/>
+					<a href="home.html" class="btn btn-warning btn-lg btn-block" style="width:100%;">返回</a>
+				</form>
+
+				
+			</div>
+		</div>
+	</div>
+			<footer class="footer"
+			style="padding: 50px 50px; background-color: gray;">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-6 text-center">
+						<p class="text-light">&copy; 2023 GuGuchick Fitness。保留所有權利。</p>
+						<p class="text-light" style="font-size: 8pt;">
+							免責聲明：<br>本網站提供的信息僅供一般信息目的。<br>在開始任何運動或飲食計劃前，請諮詢醫療專業人員。
+						</p>
+					</div>
+				</div>
+				<div class="row justify-content-center">
+					<div class="col-lg-6 text-center">
+						<ul class="list-inline social-media">
+							<li class="list-inline-item"><a href="#"><i
+									class="fab fa-facebook"></i></a></li>
+							<li class="list-inline-item"><a href="#"><i
+									class="fab fa-twitter"></i></a></li>
+							<li class="list-inline-item"><a href="#"><i
+									class="fab fa-instagram"></i></a></li>
+						</ul>
+						<p class="text-light">聯繫我們：Guguchick@gmail.com</p>
+					</div>
+				</div>
+				<div class="row justify-content-center">
+					<div class="col-lg-6 text-center">
+						<div class="scroll-to-top">
+							<!-- 將按鈕樣式改為簡約風格 -->
+							<a href="#" class="btn btn-outline-warning slogan-button "> <i
+								class="fas fa-arrow-up"></i> 返回頂部
+							</a>
+							
+						</div>
+						<br>
+						<p class="text-light">
+							<a href="privacy.html" class="text-warning">隱私政策</a> | <a
+								href="terms.html" class="text-warning">使用條款</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</footer>
+</body>
+<script>
+	$(document).ready(start); // 當文檔已經完全載入時，執行名為"start"的JavaScript函數
+	//全域變數
+	var mId;
+	var mName;
+
+	//function: 載入網頁就執行
+	function start() {
+		$.get('http://localhost:8080/session', function (data) {
+			// 發送一個AJAX GET請求到"http://localhost:8080/session"，並在成功後執行一個回調函數
+			// "data" 是從伺服器返回的數據
+			// 將session資料放入變數
+			mId = data.memberId; 
+			mName = data.name;
+
+			// 判斷 mId 是否為空，如果是則進行頁面跳轉
+			if (mId == null) {
+				window.location.href = 'memberLogin.html';
+				return; // 執行跳轉後結束函數
+        	}
+
+			// $("#mName").html(mName != null 
+			// 	? "&#x2764;&#x2764;親愛的小雞主人"+mName+"您好<br/>在這裡您可以修改您的基本資料喔&#x2764;" 
+			// 	: "<a href='memberLogin.html'>您尚未登入，請點此登入會員</a>");
+
+			getMemberData(mId);
+			logout();
+		});
+	}
+
+	//function: 格式化日期時間格式
+	function formatDate(date) {
+		const YYYY = date.getFullYear();
+		const MM = String(date.getMonth() + 1).padStart(2, '0');
+		const DD = String(date.getDate()).padStart(2, '0');
+		const hour = String(date.getHours()).padStart(2, '0');
+		const min = String(date.getMinutes()).padStart(2, '0');
+		const sec = String(date.getSeconds()).padStart(2, '0');
+
+		return `${YYYY}-${MM}-${DD} ${hour}:${min}:${sec}`;
+	}
+
+	//function: 取得會員資料
+	function getMemberData(mId) {
+		$.get('http://localhost:8080/members/' + mId, function (member) {
+			// 檢查是否找到了會員
+		//	if (member!= null) {
+				// 會員資料放入對應位置
+				$('#idText').val(member.userName);
+				$('#nameText').val(member.name);
+				$('#emailText').val(member.email);
+				$('#passwordText').val(member.password);
+
+				// 格式化日期時間為 "YYYY-MM-DD hh:mm:ss" 
+				const regisDate = new Date(member.registrationDate);
+				const formatRD = formatDate(regisDate);//傳送至formatDate()處理日期格式
+				$('#regisDate').val(formatRD);
+
+				const loginDate = new Date(member.lastLoginDate);
+				const formatLD = formatDate(loginDate);
+				$('#loginDate').val(formatLD);
+				
+				mName = member.name;
+				$("#mName").html("&#x2764;&#x2764;親愛的小雞主人"+mName+"您好<br/>"
+								+"在這裡您可以修改您的基本資料喔&#x2764;&#x2764;");
+				
+			// } else {
+			// 	// 如果未找到會員，您可以顯示一個錯誤訊息
+			// 	alert('您目前未登入，請登入會員');
+			// }
+		});
+	}
+
+	function memberUpdate(event) {
+		event.preventDefault();
+
+        // 先執行表單驗證確認無空白
+        var isValid = true;
+        var roleSelect = document.getElementById("role");
+        $("form :input").each(function() {
+            if ($(this).prop("required") && $(this).val().trim() === "") {
+                isValid = false;
+                $(this).addClass("is-invalid");
+            } else {
+                $(this).removeClass("is-invalid");
+            }
+        });
+        if (!isValid) {
+            return; // 如果驗證失敗，不執行後續AJAX請求
+        }
+
+		//驗證沒問題再儲存修改
+		var updateData = {
+			memberId: mId,
+			userName: $("#idText").val(),
+			name: $("#nameText").val(),
+			email: $("#emailText").val(),
+			password: $("#passwordText").val()
+		};
+		$.ajax({
+			url: 'http://localhost:8080/update',
+			type: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify(updateData),
+			success: function (response) {
+				if (response) {
+					alert('資料修改成功');
+					//重新整理目前頁面					
+					window.location.reload();
+										
+				} else {
+					alert('儲存失敗');
+				}
+			},
+			error: function () {
+				alert('儲存失敗');
+			}
+		});
+	}
+
+	function logout() {
+        // 給登出按鈕添加點擊事件處理程序
+        $("#mLogout").click(function() {
+        	 $.ajax({
+                 url: '/logout', // API位置
+                 type: 'GET', //  後端 HTTP 方法
+                 success: function(response) {              
+      // //成功後清除歷史記錄 //此方法配合replace跳轉頁面，歷史紀錄會出現目前頁面
+      if (window.history && window.history.pushState) {
+        window.history.pushState({}, '', '/');
+       }
+
+      // 跳轉到登入頁面 //只有此語法不保留當前頁面歷史紀錄
+      location.replace('memberLogin.html');
+                 },
+                 error: function(xhr, status, error) {
+                     console.error('Error logging out:', error);
+                 }
+             });
+        });
+    }
+</script>
+
+</html>
